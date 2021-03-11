@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wasteagram/share_location_screen.dart';
+// import 'package:wasteagram/share_location_screen.dart';
 import 'package:wasteagram/screens/detail_view.dart';
 import 'package:wasteagram/screens/log_form.dart';
 import 'package:wasteagram/screens/post_log.dart';
