@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:wasteagram/screens/upload_photo.dart';
+import 'package:wasteagram/main.dart';
 
 //Journal Entry Form
 class PostLog extends StatefulWidget {
@@ -50,19 +52,23 @@ class _PostLogState extends State<PostLog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('New posts!'),
-      ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('logs').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Text('Loading');
-            return ListView.builder(
-                itemExtent: 80.0,
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (context, index) =>
-                    _buildListItem(context, snapshot.data.docs[index]));
-          }),
-    );
+        appBar: AppBar(
+          title: Text('Wasteagram'),
+        ),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('logs').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return CircularProgressIndicator();
+              return ListView.builder(
+                  itemExtent: 80.0,
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) =>
+                      _buildListItem(context, snapshot.data.docs[index]));
+            }),
+        floatingActionButton: Container(
+            child: FloatingActionButton(
+          onPressed: () => pushCameraScreen(context),
+          child: Icon(Icons.add),
+        )));
   }
 }

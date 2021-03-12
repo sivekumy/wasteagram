@@ -67,29 +67,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Wasteagram'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            //display stuff
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => pushCameraScreen(context),
-        child: Icon(Icons.add),
-      ),
-    );
+    return PostLog();
   }
 }
 
 //Route to push to log form
-void pushLogForm(BuildContext context, File image) async {
-  Navigator.of(context).pushNamed('log_form', arguments: {'image': image});
+void pushLogForm(BuildContext context, String url) async {
+  Navigator.of(context).pushNamed('log_form', arguments: {'url': url});
 }
 
 //Route to push to camera screen

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:wasteagram/models/share_location.dart';
 import 'package:wasteagram/share_location_screen.dart';
 import 'package:location/location.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //Journal Entry Form
 class LogForm extends StatefulWidget {
@@ -28,6 +29,7 @@ class _LogFormState extends State<LogForm> {
   }
 
   LocationData locationInfo;
+  String url;
 
   //Get location information
   Future<LocationData> getLocation() async {
@@ -39,7 +41,8 @@ class _LogFormState extends State<LogForm> {
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
-    final File image = arguments['image'];
+    final String url = arguments['url'];
+    print(url);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +57,7 @@ class _LogFormState extends State<LogForm> {
             Expanded(
                 flex: 4,
                 child: Container(
-                    padding: EdgeInsets.all(20.0), child: Image.file(image))),
+                    padding: EdgeInsets.all(20.0), child: Image.network(url))),
             //Number of items
             Expanded(
                 flex: 1,
@@ -101,7 +104,7 @@ class _LogFormState extends State<LogForm> {
                                 'coordinates': GeoPoint(locationInfo.latitude,
                                     locationInfo.longitude),
                                 'numberOfItems': postFields.numberOfItems,
-                                // 'photo': //add,
+                                'photo': url,
                               });
 
                               //When submitted, go back to previous screen
