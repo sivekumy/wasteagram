@@ -17,7 +17,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   //Capture photo
   void receiveImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
     image = File(pickedFile.path);
     setState(() {});
     pushLogForm(context, image);

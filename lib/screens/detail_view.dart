@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //When user clicks on a journal entry width > maxWidth, details of the journal entry will appear
 class DetailView extends StatefulWidget {

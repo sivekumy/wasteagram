@@ -6,6 +6,9 @@ import 'package:wasteagram/screens/post_log.dart';
 import 'package:wasteagram/screens/upload_photo.dart';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:location/location.dart';
+import 'package:wasteagram/share_location_screen.dart';
+import 'package:wasteagram/models/share_location.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +25,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // LocationData locationInfo;
+
   static final routes = {
     MyHomePage.routeName: (context) => MyHomePage(),
     PostLog.routeName: (context) => PostLog(),
@@ -29,6 +34,13 @@ class _MyAppState extends State<MyApp> {
     LogForm.routeName: (context) => LogForm(),
     CameraScreen.routeName: (context) => CameraScreen()
   };
+
+  // //Get location information
+  // Future<LocationData> getLocation() async {
+  //   Future<LocationData> result = ShareLocation().getLocation();
+  //   locationInfo = await result;
+  //   return result;
+  // }
 
   // This widget is the root of your application.
   @override

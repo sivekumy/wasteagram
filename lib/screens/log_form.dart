@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:wasteagram/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wasteagram/models/post_info.dart';
+import 'package:flutter/services.dart';
+import 'package:wasteagram/models/share_location.dart';
+import 'package:wasteagram/share_location_screen.dart';
+import 'package:location/location.dart';
 
 //Journal Entry Form
 class LogForm extends StatefulWidget {
@@ -12,10 +18,22 @@ class LogForm extends StatefulWidget {
 //Fill in Journal Entries
 class _LogFormState extends State<LogForm> {
   final formKey = GlobalKey<FormState>();
+  final postFields = PostFields(); //Collects all the fields
+  // final location = ShareLocationScreen();
 
   @override
   void initState() {
     super.initState();
+    getLocation();
+  }
+
+  LocationData locationInfo;
+
+  //Get location information
+  Future<LocationData> getLocation() async {
+    Future<LocationData> result = ShareLocation().getLocation();
+    locationInfo = await result;
+    return result;
   }
 
   @override
@@ -46,12 +64,13 @@ class _LogFormState extends State<LogForm> {
                     child: TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         labelText: 'Number of items',
                         border: OutlineInputBorder(),
                       ),
                       onSaved: (value) {
-                        // journalEntryFields.title = value;
+                        postFields.numberOfItems = int.parse(value);
                       },
                       validator: (value) {
                         if (value.isEmpty) {
@@ -62,6 +81,7 @@ class _LogFormState extends State<LogForm> {
                       },
                     ))),
             // SizedBox(height: 5),
+            //Buttons
             Expanded(
                 flex: 2,
                 child: Container(
@@ -70,15 +90,19 @@ class _LogFormState extends State<LogForm> {
                       ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState.validate()) {
-                              //Add date information
-                              DateTime today = DateTime.now();
-                              String currentDate =
-                                  "${today.year.toString()}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-
                               //Update counter in my app
                               formKey.currentState.save();
 
-                              //Update database
+                              //Update firebase database
+                              FirebaseFirestore.instance
+                                  .collection('logs')
+                                  .add({
+                                'date': DateTime.now(),
+                                'coordinates': GeoPoint(locationInfo.latitude,
+                                    locationInfo.longitude),
+                                'numberOfItems': postFields.numberOfItems,
+                                // 'photo': //add,
+                              });
 
                               //When submitted, go back to previous screen
                               pushPostLog(context);

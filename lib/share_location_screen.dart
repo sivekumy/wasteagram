@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
+import 'package:wasteagram/models/post_info.dart';
 
 class ShareLocationScreen extends StatefulWidget {
   @override
