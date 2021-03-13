@@ -20,33 +20,31 @@ class _PostLogState extends State<PostLog> {
     super.initState();
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+  Widget _buildListItem(
+      BuildContext context, DocumentSnapshot document, int index) {
     return ListTile(
-      title: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Text(
-              DateFormat.yMMMMEEEEd().format(document['date'].toDate()),
-              style: Theme.of(context).textTheme.headline5,
+        title: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Text(
+                DateFormat.yMMMMEEEEd().format(document['date'].toDate()),
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-                // color: Color(0xffddddff),
-                ),
-            // padding: const EdgeInsets.all(10.0),
-            child: Text(
-              document['numberOfItems'].toString(),
-              style: Theme.of(context).textTheme.headline5,
+            Container(
+              decoration: const BoxDecoration(
+                  // color: Color(0xffddddff),
+                  ),
+              // padding: const EdgeInsets.all(10.0),
+              child: Text(
+                document['numberOfItems'].toString(),
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
-          ),
-        ],
-      ),
-      onTap: () {
-        print("should display detail view");
-      },
-    );
+          ],
+        ),
+        onTap: () => pushDetailView(context, index));
   }
 
   @override
@@ -56,19 +54,24 @@ class _PostLogState extends State<PostLog> {
           title: Text('Wasteagram'),
         ),
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('logs').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('logs')
+                .orderBy('date', descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return CircularProgressIndicator();
               return ListView.builder(
                   itemExtent: 80.0,
                   itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) =>
-                      _buildListItem(context, snapshot.data.docs[index]));
+                  itemBuilder: (context, index) => _buildListItem(
+                      context, snapshot.data.docs[index], index));
             }),
-        floatingActionButton: Container(
-            child: FloatingActionButton(
-          onPressed: () => pushCameraScreen(context),
-          child: Icon(Icons.add),
-        )));
+        floatingActionButton:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          FloatingActionButton(
+            onPressed: () => pushCameraScreen(context),
+            child: Icon(Icons.camera_alt),
+          )
+        ]));
   }
 }

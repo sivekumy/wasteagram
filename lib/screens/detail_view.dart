@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 //When user clicks on a journal entry width > maxWidth, details of the journal entry will appear
 class DetailView extends StatefulWidget {
@@ -9,89 +12,83 @@ class DetailView extends StatefulWidget {
 }
 
 class _DetailViewState extends State<DetailView> {
-  // Journal journal;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getJournalEntries();
-  // }
-
-  // //Retrieves journal entries
-  // Future<List> getJournalEntries() async {
-  //   Future<List> result = DatabaseHelper().loadJournal();
-  //   List journalEntries = await result;
-
-  //   setState(() {
-  //     journal = Journal(entries: journalEntries);
-  //   });
-
-  //   return result;
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
     final int indexArgument = arguments['index'];
-    //Displays details of each journal entry when tapped
-    //Details include journal entry #, title, body, date, and rating
-    // return FutureBuilder<List>(
-    //     future: getJournalEntries(),
-    //     builder: (context, AsyncSnapshot<List> snapshot) {
-    //       if (snapshot.hasData) {
-    //         return Scaffold(
-    //             appBar: AppBar(
-    //               title: Row(children: <Widget>[
-    //                 IconButton(
-    //                   icon: Icon(Icons.arrow_back),
-    //                   onPressed: () {
-    //                     Navigator.of(context).pop();
-    //                   },
-    //                 ),
-    //                 Expanded(child: Text('Journal Entry ${indexArgument + 1}')),
-    //               ]),
-    //             ),
-    //             endDrawer: Drawer(
-    //               child: ListView(
-    //                 padding: EdgeInsets.zero,
-    //                 children: <Widget>[
-    //                   Container(
-    //                       height: 90,
-    //                       child: DrawerHeader(
-    //                         decoration: BoxDecoration(color: Colors.blue),
-    //                         child: Text(
-    //                           'Settings',
-    //                           style: TextStyle(
-    //                             color: Colors.white,
-    //                             fontSize: 20,
-    //                           ),
-    //                         ),
-    //                       )),
-    //                   SwitchListTile(
-    //                     title: Text('Dark Mode'),
-    //                     value: MyApp.of(context).darkTheme,
-    //                     onChanged: MyApp.of(context).toggleTheme,
-    //                     // value: notifier.darkTheme,
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             body: SingleChildScrollView(
-    //                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-    //               ListTile(
-    //                 title: Text('Title: ${snapshot.data[indexArgument].title}'),
-    //                 subtitle:
-    //                     Text('Body: ${snapshot.data[indexArgument].body}\n'
-    //                         'Date: ${snapshot.data[indexArgument].date}\n'
-    //                         'Rating: ${snapshot.data[indexArgument].rating}'),
-    //               )
-    //             ])));
-    //       } else {
-    //         //if data not received, circular progress indicator is displayed
-    //         return CircularProgressIndicator();
-    //       }
-    //     }
 
-    // );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Wasteagram'),
+      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('logs')
+              .orderBy('date', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return CircularProgressIndicator();
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //Date
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                      child: Text(
+                        DateFormat.yMMMMEEEEd().format(
+                            snapshot.data.docs[indexArgument]['date'].toDate()),
+                        style: Theme.of(context).textTheme.headline5,
+                        textAlign: TextAlign.center,
+                      ),
+                    )),
+                //Picture
+                Expanded(
+                  flex: 3,
+                  child:
+                      Image.network(snapshot.data.docs[indexArgument]['photo']),
+                ),
+                //Number of Items
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child: Text(
+                        snapshot.data.docs[indexArgument]['numberOfItems']
+                                .toString() +
+                            " items",
+                        style: Theme.of(context).textTheme.headline5,
+                      )),
+                ),
+                //Latitude and longitude
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: Text(
+                          "Location: (" +
+                              snapshot.data.docs[indexArgument]['coordinates']
+                                  .latitude
+                                  .toString() +
+                              ", " +
+                              snapshot.data.docs[indexArgument]['coordinates']
+                                  .longitude
+                                  .toString() +
+                              ")",
+                          style: TextStyle(fontSize: 15),
+                          textAlign: TextAlign.center),
+                    )),
+              ],
+            ));
+          }),
+    );
   }
 }

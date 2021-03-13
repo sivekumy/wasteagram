@@ -48,6 +48,7 @@ class _LogFormState extends State<LogForm> {
       appBar: AppBar(
         title: Text('New Post'),
       ),
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: formKey,
         child: Column(
@@ -62,14 +63,14 @@ class _LogFormState extends State<LogForm> {
             Expanded(
                 flex: 1,
                 child: Container(
-                    margin: const EdgeInsets.only(right: 100, left: 100),
+                    margin: const EdgeInsets.only(right: 50, left: 50),
                     padding: EdgeInsets.all(5),
                     child: TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
-                        labelText: 'Number of items',
+                        labelText: 'Number of wasted items',
                         border: OutlineInputBorder(),
                       ),
                       onSaved: (value) {
@@ -84,37 +85,38 @@ class _LogFormState extends State<LogForm> {
                       },
                     ))),
             // SizedBox(height: 5),
-            //Buttons
+            //Upload button
             Expanded(
                 flex: 2,
                 child: Container(
-                    padding: EdgeInsets.all(5.0),
+                    padding: EdgeInsets.only(top: 100.0),
                     child: Column(children: [
-                      ElevatedButton(
-                          onPressed: () async {
-                            if (formKey.currentState.validate()) {
-                              //Update counter in my app
-                              formKey.currentState.save();
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              if (formKey.currentState.validate()) {
+                                //Update counter in my app
+                                formKey.currentState.save();
 
-                              //Update firebase database
-                              FirebaseFirestore.instance
-                                  .collection('logs')
-                                  .add({
-                                'date': DateTime.now(),
-                                'coordinates': GeoPoint(locationInfo.latitude,
-                                    locationInfo.longitude),
-                                'numberOfItems': postFields.numberOfItems,
-                                'photo': url,
-                              });
+                                //Update firebase database
+                                FirebaseFirestore.instance
+                                    .collection('logs')
+                                    .add({
+                                  'date': DateTime.now(),
+                                  'coordinates': GeoPoint(locationInfo.latitude,
+                                      locationInfo.longitude),
+                                  'numberOfItems': postFields.numberOfItems,
+                                  'photo': url,
+                                });
 
-                              //When submitted, go back to previous screen
-                              pushPostLog(context);
-                            }
-                          },
-                          child: Text('Save Entry')),
-                      ElevatedButton(
-                          onPressed: () => pushPostLog(context),
-                          child: Text('Cancel'))
+                                //When submitted, go back to previous screen
+                                pushPostLog(context);
+                              }
+                            },
+                            child: Icon(Icons.cloud_upload)),
+                      )
                     ])))
           ],
         ),

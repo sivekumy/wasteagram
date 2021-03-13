@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
   static final routes = {
     MyHomePage.routeName: (context) => MyHomePage(),
     PostLog.routeName: (context) => PostLog(),
-    // DetailView.routeName: (context) => DetailView(),
+    DetailView.routeName: (context) => DetailView(),
     LogForm.routeName: (context) => LogForm(),
     CameraScreen.routeName: (context) => CameraScreen()
   };
@@ -82,8 +82,8 @@ void pushCameraScreen(BuildContext context) async {
 }
 
 //Route to push to detail view
-void pushDetailView(BuildContext context) async {
-  Navigator.of(context).pushNamed('detail_view');
+void pushDetailView(BuildContext context, int index) async {
+  Navigator.of(context).pushNamed('detail_view', arguments: {'index': index});
 }
 
 //Route to push to detail view
