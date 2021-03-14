@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:wasteagram/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wasteagram/models/post_info.dart';
 import 'package:flutter/services.dart';
 import 'package:wasteagram/models/share_location.dart';
-import 'package:wasteagram/share_location_screen.dart';
 import 'package:location/location.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 //Journal Entry Form
 class LogForm extends StatefulWidget {
@@ -42,12 +39,15 @@ class _LogFormState extends State<LogForm> {
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
     final String url = arguments['url'];
-    print(url);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Post'),
-      ),
+          title: Text('New Post'),
+          leading: BackButton(
+            onPressed: () {
+              pushPostLog(context);
+            },
+          )),
       resizeToAvoidBottomInset: false,
       body: Form(
         key: formKey,
@@ -74,11 +74,15 @@ class _LogFormState extends State<LogForm> {
                         border: OutlineInputBorder(),
                       ),
                       onSaved: (value) {
-                        postFields.numberOfItems = int.parse(value);
+                        postFields.quantity = int.parse(value);
+                        postFields.latitude = locationInfo.latitude;
+                        postFields.longitude = locationInfo.longitude;
+                        postFields.imageURL = url;
+                        postFields.date = DateTime.now();
                       },
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Please enter the numbero of items';
+                          return 'Please enter the number of items';
                         } else {
                           return null;
                         }
@@ -97,18 +101,17 @@ class _LogFormState extends State<LogForm> {
                         child: ElevatedButton(
                             onPressed: () async {
                               if (formKey.currentState.validate()) {
-                                //Update counter in my app
                                 formKey.currentState.save();
 
                                 //Update firebase database
                                 FirebaseFirestore.instance
                                     .collection('logs')
                                     .add({
-                                  'date': DateTime.now(),
-                                  'coordinates': GeoPoint(locationInfo.latitude,
-                                      locationInfo.longitude),
-                                  'numberOfItems': postFields.numberOfItems,
-                                  'photo': url,
+                                  'date': postFields.date,
+                                  'coordinates': GeoPoint(postFields.latitude,
+                                      postFields.longitude),
+                                  'numberOfItems': postFields.quantity,
+                                  'photo': postFields.imageURL,
                                 });
 
                                 //When submitted, go back to previous screen

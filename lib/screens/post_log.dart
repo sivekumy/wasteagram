@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:wasteagram/screens/upload_photo.dart';
 import 'package:wasteagram/main.dart';
 
 //Journal Entry Form
 class PostLog extends StatefulWidget {
-  static const routeName = 'post_log';
+  static const routeName = '/';
 
   @override
   _PostLogState createState() => _PostLogState();
@@ -52,6 +50,7 @@ class _PostLogState extends State<PostLog> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Wasteagram'),
+          leading: Container(),
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance

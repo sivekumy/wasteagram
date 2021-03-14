@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'package:wasteagram/share_location_screen.dart';
 import 'package:wasteagram/screens/detail_view.dart';
 import 'package:wasteagram/screens/log_form.dart';
 import 'package:wasteagram/screens/post_log.dart';
 import 'package:wasteagram/screens/upload_photo.dart';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:location/location.dart';
-import 'package:wasteagram/share_location_screen.dart';
-import 'package:wasteagram/models/share_location.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   // LocationData locationInfo;
 
   static final routes = {
-    MyHomePage.routeName: (context) => MyHomePage(),
+    // MyHomePage.routeName: (context) => MyHomePage(),
     PostLog.routeName: (context) => PostLog(),
     DetailView.routeName: (context) => DetailView(),
     LogForm.routeName: (context) => LogForm(),
@@ -54,22 +49,27 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  static const routeName = '/';
+// class MyHomePage extends StatefulWidget {
+//   MyHomePage({Key key, this.title}) : super(key: key);
+//   static const routeName = '/';
 
-  final String title;
+//   final String title;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
 
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return PostLog();
-  }
-}
+// class _MyHomePageState extends State<MyHomePage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return PostLog();
+//   }
+// }
+
+// //Route to push to home screen
+// void pushHomeScreen(BuildContext context) async {
+//   Navigator.of(context).pushNamed('/');
+// }
 
 //Route to push to log form
 void pushLogForm(BuildContext context, String url) async {
@@ -88,5 +88,5 @@ void pushDetailView(BuildContext context, int index) async {
 
 //Route to push to detail view
 void pushPostLog(BuildContext context) async {
-  Navigator.of(context).pushNamed('post_log');
+  Navigator.of(context).pushNamed('/');
 }

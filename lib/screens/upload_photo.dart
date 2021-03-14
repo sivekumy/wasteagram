@@ -22,7 +22,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     image = File(pickedFile.path);
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child('Example.jpg');
+    Reference ref = storage.ref().child('Photo' + '${DateTime.now()}' + '.jpg');
     UploadTask uploadTask = ref.putFile(image);
     uploadTask.whenComplete(() async {
       url = await ref.getDownloadURL();
